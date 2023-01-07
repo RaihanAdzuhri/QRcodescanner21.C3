@@ -1,34 +1,21 @@
 package com.example.qrcodescanner21c3;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.PackageManagerCompat;
-
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Contacts;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.zxing.integration.android.IntentIntegrator;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.ls.LSParser;
-import org.xml.sax.helpers.XMLFilterImpl;
-
-import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //view Object
@@ -68,17 +55,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (Patterns.EMAIL_ADDRESS.matcher(result.getContents()).matches()) {
                 Intent intent = new Intent(Intent.ACTION_SEND, Uri.parse(result.getContents()));
                 intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"raihanadzuhri1@gmail.com"});
-                intent.putExtra(Intent.EXTRA_CC, new String[] {"raihancahbekasi1@gmail.com"});
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"raihanadzuhri1@gmail.com"});
+                intent.putExtra(Intent.EXTRA_CC, new String[]{"raihancahbekasi1@gmail.com"});
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Fungsi Email");
                 intent.putExtra(Intent.EXTRA_TEXT, "Raihan Adzuhri-TI.21.C.3-312110374");
                 try {
                     startActivity(Intent.createChooser(intent, "Ingin Mengirim Email ?"));
                 } catch (android.content.ActivityNotFoundException ex) {
-                    //do something else
                 }
+            }else if (Patterns.WEB_URL.matcher(result.getContents()).matches()){
+                String geoUri=result.getContents();
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(geoUri));
+                //Set Package
+                intent.setPackage("com.google.android.apps.maps");
 
-            }
+                //Set Flag
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                startActivity(intent);
+                }
             else if (Patterns.PHONE.matcher(result.getContents()).matches()) {
                 String telp = String.valueOf(result.getContents());
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + telp));
@@ -103,22 +98,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(this, result.getContents(),
                             Toast.LENGTH_LONG).show();
                 }
-            } }{
-            try {
-                String geoUri=result.getContents();
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(geoUri));
-                //Set Package
-                intent.setPackage("com.google.android.apps.maps");
+            } }
 
-                //Set Flag
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                startActivity(intent);
-            }finally {
-
-            }
-
-        }  {
+        else{
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
